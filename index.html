@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<title>Transcript (FR + VI)</title>
+<title>Transcript (TL + VI)</title>
 <style>
     body { font-family: Arial, sans-serif; }
     #player { margin-bottom: 15px; }
@@ -72,7 +73,7 @@ function saveScripts() {
 
   const blob = new Blob([JSON.stringify({
     videoId,
-    zhText: enChunks.join('\n'),
+    tlText: enChunks.join('\n'),
     viText: viChunks.join('\n')
   }, null, 2)], { type: 'application/json' });
 
@@ -94,7 +95,7 @@ function loadScriptFile(event) {
     try {
       const data = JSON.parse(e.target.result);
       document.getElementById('videoIdInput').value = data.videoId || '';
-      document.getElementById('scriptEN').value = data.enText || '';
+      document.getElementById('scriptTL').value = data.tlText || '';
       document.getElementById('scriptVI').value = data.viText || '';
     } catch (err) {
       alert('Invalid JSON file.');
@@ -108,7 +109,7 @@ function loadScriptFile(event) {
 <body>
 <div style="margin: 20px auto; max-width: 800px;">
 <label>🔗 YouTube Video ID: <input id="videoIdInput" style="width: 300px;" type="text" value=""/></label><br/><br/>
-<label>📝 Filipino Transcript: <textarea id="scriptFR" rows="6" style="width: 100%;"></textarea></label><br/><br/>
+<label>📝 Filino Transcript: <textarea id="scriptTL" rows="6" style="width: 100%;"></textarea></label><br/><br/>
 <label>🇻🇳 Vietnamese Transcript: <textarea id="scriptVI" rows="6" style="width: 100%;"></textarea></label><br/><br/>
 <br/>
 <button onclick="loadVideoAndTranscript()">▶️ Load Video + Transcript</button><br/>
@@ -121,7 +122,7 @@ function loadScriptFile(event) {
 
 </div>
 <div id="player"></div>
-<h3>Transcript (FR + VI)</h3>
+<h3>Transcript (TL + VI)</h3>
 <div id="toolbar">
 <button onclick="execCmd('bold')"><b>B</b></button>
 <button onclick="execCmd('italic')"><i>I</i></button>
@@ -182,7 +183,7 @@ let scrollTimeout = null;
       }
     }
     document.querySelectorAll('.line').forEach(el => el.classList.remove('highlight'));
-    if (currentId && currentId.startsWith('zh_')) {
+    if (currentId && currentId.startsWith('tl_')) {
       const activeEl = document.getElementById(currentId);
       if (activeEl) {
         activeEl.classList.add('highlight');
@@ -239,7 +240,7 @@ let scrollTimeout = null;
 
   function loadVideoAndTranscript() {
     const videoId = document.getElementById('videoIdInput').value.trim();
-    const rawFR = document.getElementById('scriptFR').value.trim();
+    const rawTL = document.getElementById('scriptTL').value.trim();
     const rawVI = document.getElementById('scriptVI').value.trim();
 
     if (player && player.loadVideoById) {
@@ -250,18 +251,18 @@ let scrollTimeout = null;
       });
     }
 
-    const zh = parseTranscript(rawFR);
+    const tl = parseTranscript(rawTL);
     const vi = parseTranscript(rawVI);
     const transcript = document.getElementById('transcript');
     transcript.innerHTML = '';
     transcriptData = [];
 
-    for (let i = 0; i < Math.max(zh.length, vi.length); i++) {
-      if (zh[i]) {
-        const text = `[${Math.floor(zh[i].time / 60)}:${(zh[i].time % 60).toString().padStart(2, '0')}] ${zh[i].text}`;
-        const div = createLineCard('zh_' + i, zh[i].time, text, 'user');
+    for (let i = 0; i < Math.max(tl.length, vi.length); i++) {
+      if (tl[i]) {
+        const text = `[${Math.floor(tl[i].time / 60)}:${(tl[i].time % 60).toString().padStart(2, '0')}] ${tl[i].text}`;
+        const div = createLineCard('tl_' + i, tl[i].time, text, 'user');
         transcript.appendChild(div);
-        transcriptData.push({ id: 'zh_' + i, time: zh[i].time });
+        transcriptData.push({ id: 'tl_' + i, time: tl[i].time });
       }
       if (vi[i]) {
         const text = `[VI] ${vi[i].text}`;
@@ -310,7 +311,7 @@ document.addEventListener('dblclick', e => {
       return;
     }
     const recognition = new webkitSpeechRecognition();
-    recognition.lang = 'fr-FR';
+    recognition.lang = 'tl-PH';
 
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
@@ -388,7 +389,7 @@ function saveScripts() {
 
   const blob = new Blob([JSON.stringify({
     videoId,
-    zhText: enChunks.join('\n'),
+    tlText: enChunks.join('\n'),
     viText: viChunks.join('\n')
   }, null, 2)], { type: 'application/json' });
 
@@ -410,7 +411,7 @@ function loadScriptFile(event) {
     try {
       const data = JSON.parse(e.target.result);
       document.getElementById('videoIdInput').value = data.videoId || '';
-      document.getElementById('scriptFR').value = data.zhText || '';
+      document.getElementById('scriptTL').value = data.tlText || '';
       document.getElementById('scriptVI').value = data.viText || '';
     } catch (err) {
       alert('Invalid JSON file.');
